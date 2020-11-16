@@ -22,12 +22,31 @@ abstract class AsteroidsGameLevel extends GameLevel
     powerUps = new CopyOnWriteArrayList<GameObject>();
     asteroids = new CopyOnWriteArrayList<GameObject>();
     
+    for(GameObject lives: P1lives)
+    {
+      lives.setInactive();
+      P1lives.remove(lives);
+    }
+    P1lives = new CopyOnWriteArrayList<Image>();
+    for(int i = 0; i < playerOneRemainingLives; i++)
+    {
+      P1lives.add(new Image(game, "ship1.png", 50 * i + XLivesOffset, YLivesOffset));
+    }
+    for(GameObject lives: P2lives)
+    {
+      lives.setInactive();
+      P2lives.remove(lives);
+    }
+    P2lives = new CopyOnWriteArrayList<Image>();
+    for(int i = 0; i < playerTwoRemainingLives; i++)
+    {
+      P2lives.add(new Image(game, "ship2.png", width - (50 * i + XLivesOffset), YLivesOffset));
+    }
     playerOneScore = 0;
     playerTwoScore = 0;
   }
 
   void start() {
-    // Not Used
   } 
 
   // Remove all GameObjects from the Level
@@ -48,6 +67,12 @@ abstract class AsteroidsGameLevel extends GameLevel
     }
     for (GameObject powerup : powerUps) {
       powerup.setInactive();
+    }
+    for (GameObject lives : P1lives) {
+      lives.setInactive();
+    }
+    for (GameObject lives : P2lives) {
+      lives.setInactive();
     }
 
     sweepInactiveObjects();
@@ -123,6 +148,18 @@ abstract class AsteroidsGameLevel extends GameLevel
         powerUps.remove(powerUp);
       }
     }
+    
+    // Remove inactive lives sprite
+    for (GameObject lives : P1lives) {
+      if (!lives.isActive()) {
+        powerUps.remove(lives);
+      }
+    }
+    for (GameObject lives : P2lives) {
+      if (!lives.isActive()) {
+        powerUps.remove(lives);
+      }
+    }
   }
 
   // Cause each GameObject to update their state.
@@ -145,15 +182,18 @@ abstract class AsteroidsGameLevel extends GameLevel
     for (GameObject powerUp : powerUps) {
       if (powerUp.isActive()) powerUp.update();
     }
-    
-    
+    for (GameObject lives : P1lives) {
+      if (lives.isActive()) lives.update();
+    }
+    for (GameObject lives : P2lives) {
+      if (lives.isActive()) lives.update();
+    }
   }
 
   // Check PowerUp to Missile collisions
   private void checkPowerUpCollisions(Ship ship) 
   {
     if (!ship.isActive()) return;
-
 
     for (GameObject powerUp : powerUps) {
       for (GameObject missile : missiles) {
@@ -216,6 +256,8 @@ abstract class AsteroidsGameLevel extends GameLevel
         ship.setInactive();
         if (ship == ship1) {
           playerOneRemainingLives = playerOneRemainingLives - 1;
+          P1lives.get(playerOneRemainingLives).setInactive();
+          P1lives.remove(playerOneRemainingLives);
           if (playerOneRemainingLives > 0) {
             ship1 = new Ship(game, width/2, height/2, 1 , "ship1.png");
           } else {
@@ -229,6 +271,7 @@ abstract class AsteroidsGameLevel extends GameLevel
           }
         } else if (ship == ship2) {
           playerTwoRemainingLives = playerTwoRemainingLives - 1;
+          P2lives.get(playerTwoRemainingLives).setInactive();
           if (playerTwoRemainingLives > 0) {
             ship2 = new Ship(game, width/2, height/2, 2, "ship2.png");
           } else {
@@ -254,7 +297,7 @@ abstract class AsteroidsGameLevel extends GameLevel
     }
   }
 
-  private void addSmallAsteroids(GameObject go) 
+  private void addSmallAsteroids(GameObject go)
   {
     int xpos = (int)go.getX();
     int ypos = (int)go.getY();
