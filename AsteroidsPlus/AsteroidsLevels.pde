@@ -9,11 +9,12 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
   StopWatch powerupSW;
   int periodBetweenPU = 10;
   float asteroidSpeed;
+  PApplet applet;
 
   AsteroidsLevel1(PApplet applet)
   {
     super(applet);
-
+    this.applet = applet;
     powerupSW = new StopWatch();
     asteroidSpeed = 3;
   }
@@ -27,14 +28,30 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
     
     playerOneRemainingLives = 3;
     playerTwoRemainingLives = 0;
-
+    
+    for(GameObject lives: P1lives)
+    {
+      lives.setInactive();
+      P1lives.remove(lives);
+    }
+    P1lives = new CopyOnWriteArrayList<Image>();
+    for(int i = 0; i < playerOneRemainingLives; i++)
+    {
+      P1lives.add(new Image(game, "ship1.png", 50 * i + XLivesOffset, YLivesOffset));
+    }
+    for(GameObject lives: P2lives)
+    {
+      lives.setInactive();
+      P2lives.remove(lives);
+    }
+    P2lives = new CopyOnWriteArrayList<Image>();
+    
     // Example of setting the ship's sprite to a custom image. 
     //ship = new Ship(game, "ships2.png", width/2, height/2);
     //ship.setScale(.5);
 
     asteroids.add(new BigAsteroid(game, 200, 500, 0, 0.02, 22, PI*.5));
     asteroids.add(new BigAsteroid(game, 500, 200, 1, -0.01, 22, PI*1));
-
     gameState = GameState.Running;
   }
 
@@ -74,7 +91,7 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
 
   void keyPressed() 
   {
-    if ( key == '\n') {
+    if ( key == ' ') {
       if (ship1.isActive()) {
         launchMissile(missileSpeed);
       }
@@ -97,6 +114,7 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
   
   void mousePressed()
   {
+    
   }
   
 }
@@ -129,7 +147,26 @@ class AsteroidsLevel2 extends AsteroidsGameLevel
     
     playerOneRemainingLives = 3;
     playerTwoRemainingLives = 3;
-
+    for(GameObject lives: P1lives)
+    {
+      lives.setInactive();
+      P1lives.remove(lives);
+    }
+    P1lives = new CopyOnWriteArrayList<Image>();
+    for(int i = 0; i < playerOneRemainingLives; i++)
+    {
+      P1lives.add(new Image(game, "ship1.png", 50 * i + XLivesOffset, YLivesOffset));
+    }
+    for(GameObject lives: P2lives)
+    {
+      lives.setInactive();
+      P2lives.remove(lives);
+    }
+    P2lives = new CopyOnWriteArrayList<Image>();
+    for(int i = 0; i < playerTwoRemainingLives; i++)
+    {
+      P2lives.add(new Image(game, "ship1.png", 50 * i + XLivesOffset, YLivesOffset));
+    }
     gameState = GameState.Running;
   }
 
@@ -147,15 +184,14 @@ class AsteroidsLevel2 extends AsteroidsGameLevel
   {
     String msg;
     
-    
     fill(255);
     textSize(20);
     msg = "Player 1 " + ": " + "Player 2";
     text(msg, (width/2) - 87, 20);
     textSize(40);
     msg = playerOneScore + " : " + playerTwoScore;
-    text(msg, (width/2) - 45, 60);  
-  
+    text(msg, (width/2) - 45, 60);
+    
     ship1.drawOnScreen(); // Draws Energy Bar
     ship2.drawOnScreen();
   }
