@@ -18,6 +18,12 @@ StopWatch stopWatch = new StopWatch();
 
 int playerOneRemainingLives;
 int playerTwoRemainingLives;
+CopyOnWriteArrayList<Image> P1lives = new CopyOnWriteArrayList<Image>();
+CopyOnWriteArrayList<Image> P2lives = new CopyOnWriteArrayList<Image>();
+
+final int YLivesOffset = 50;
+final int XLivesOffset = 30;
+final int space = 50;
 
 int playerOneScore;
 int playerTwoScore;
@@ -29,10 +35,9 @@ void setup() {
   
   // BG Image must be same size as window. 
   background = loadImage("background.png");
-
+  
   kbController = new KeyboardController(this);
   soundPlayer = new SoundPlayer(this);  
-
   // register the function (pre) that will be called
   // by Processing before the draw() function. 
   registerMethod("pre", this);
@@ -102,7 +107,6 @@ void nextLevelStateMachine(){
       gameLevel.start();
     }
   }
-  
 }
 
 void keyPressed() {
