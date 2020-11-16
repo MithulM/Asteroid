@@ -17,7 +17,7 @@ public enum GameState
 abstract class GameLevel 
 {
   PApplet game;
-  GameState gameState; 
+  GameState gameState;
   int numOfPlayers = 0;
 
   GameLevel(PApplet applet)
