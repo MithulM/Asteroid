@@ -11,3 +11,6 @@ Refactoring of GameObjects to simplify design.
 
 Version 4
 Refactored GameObject to inherit from Sprite. 
+
+Version 5
+Added a sprite visualization of the lives.
