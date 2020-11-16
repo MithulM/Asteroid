@@ -45,7 +45,10 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
       P2lives.remove(lives);
     }
     P2lives = new CopyOnWriteArrayList<Image>();
-    
+    for(int i = 0; i < playerTwoRemainingLives; i++)
+    {
+      P2lives.add(new Image(game, "ship2.png", width - (50 * i + XLivesOffset), YLivesOffset));
+    }
     // Example of setting the ship's sprite to a custom image. 
     //ship = new Ship(game, "ships2.png", width/2, height/2);
     //ship.setScale(.5);
@@ -130,7 +133,6 @@ class AsteroidsLevel2 extends AsteroidsGameLevel
   AsteroidsLevel2(PApplet applet)
   {
     super(applet);
-
     powerupSW = new StopWatch();
   }
 
@@ -152,7 +154,6 @@ class AsteroidsLevel2 extends AsteroidsGameLevel
       lives.setInactive();
       P1lives.remove(lives);
     }
-    P1lives = new CopyOnWriteArrayList<Image>();
     for(int i = 0; i < playerOneRemainingLives; i++)
     {
       P1lives.add(new Image(game, "ship1.png", 50 * i + XLivesOffset, YLivesOffset));
@@ -162,10 +163,9 @@ class AsteroidsLevel2 extends AsteroidsGameLevel
       lives.setInactive();
       P2lives.remove(lives);
     }
-    P2lives = new CopyOnWriteArrayList<Image>();
     for(int i = 0; i < playerTwoRemainingLives; i++)
     {
-      P2lives.add(new Image(game, "ship1.png", 50 * i + XLivesOffset, YLivesOffset));
+      P2lives.add(new Image(game, "ship2.png", width - (50 * i + XLivesOffset), YLivesOffset));
     }
     gameState = GameState.Running;
   }
