@@ -5,23 +5,23 @@
 
 abstract class AsteroidsGameLevel extends GameLevel 
 {
-  Ship ship1;
-  Ship ship2;
   CopyOnWriteArrayList<GameObject> asteroids;
   CopyOnWriteArrayList<GameObject> missiles;
   CopyOnWriteArrayList<GameObject> explosions;
   CopyOnWriteArrayList<GameObject> powerUps;
-
+  int smallDestroyed;
+  boolean frozen;
+  
   AsteroidsGameLevel(PApplet game)
   {
     super(game);
     this.game = game;
-
+    smallDestroyed = 0;
     missiles = new CopyOnWriteArrayList<GameObject>();
     explosions = new CopyOnWriteArrayList<GameObject>();
     powerUps = new CopyOnWriteArrayList<GameObject>();
     asteroids = new CopyOnWriteArrayList<GameObject>();
-    
+    frozen = false;
     for(GameObject lives: P1lives)
     {
       lives.setInactive();
@@ -44,6 +44,27 @@ abstract class AsteroidsGameLevel extends GameLevel
     }
     playerOneScore = 0;
     playerTwoScore = 0;
+  }
+  
+  private void addAsteroids(int amount)
+  {
+    for(int i = 0; i < amount; i++)
+    {
+      int bound = 30;
+      int xPicBounds = 180;
+      int yPicBounds = 100;
+      int xCoord = (int)random(bound,game.width-bound);
+      int yCoord = (int)random(bound,game.height-bound);
+      while (!(xCoord < (game.width/2 - xPicBounds) || xCoord > (game.width/2 + xPicBounds)))
+      {
+        xCoord = (int)random(bound,game.width-bound);
+      }
+      while (!(yCoord < (game.height/2 - yPicBounds) || yCoord > (game.height/2 + yPicBounds)))
+      {
+        yCoord = (int)random(bound,game.height-bound);
+      }
+      asteroids.add(new BigAsteroid(game, xCoord, yCoord, (int)random(1,3), random(-0.02,0.02), random(20,50), PI*random(0,2)));
+    }
   }
 
   void start() {
@@ -86,11 +107,10 @@ abstract class AsteroidsGameLevel extends GameLevel
   {
     sweepInactiveObjects();
     updateObjects();
-
+    
     if (isLevelOver()) {
       gameState = GameState.Finished;
-    } 
-
+    }
     checkShipCollisions(ship1);
     checkMissileCollisions(ship1);
     checkPowerUpCollisions(ship1);
@@ -100,20 +120,51 @@ abstract class AsteroidsGameLevel extends GameLevel
       checkMissileCollisions(ship2);
       checkPowerUpCollisions(ship2);
     }
-    
+    if (freeze)
+      if (freezeSW.getRunTime() < FreezeTime)
+      {
+        for (GameObject asteroid: asteroids)
+          if (asteroid instanceof BigAsteroid)
+            ((BigAsteroid)asteroid).setFreeze(true);
+          else
+            ((SmallAsteroid)asteroid).setFreeze(true);
+      }
+      else
+      {
+        freeze = false;
+        for (GameObject asteroid: asteroids)
+          if (asteroid instanceof BigAsteroid)
+            ((BigAsteroid)asteroid).setFreeze(false);
+          else
+            ((SmallAsteroid)asteroid).setFreeze(false);
+      }
   }
 
   // The game ends when there are no asteroids and the ship is active. 
   private boolean isLevelOver() 
   {
     //Adjust point values here
-    if (playerOneScore >= 3 && ship1.isActive()) {
-      winner = 1;
-      return true;
-    } else if (playerTwoScore >= 3 && ship2.isActive()) {
-      winner = 2;
-      return true;
-    } else {
+    if(ship2 != null){
+      if (playerOneScore - playerTwoScore >= 5 && ship1.isActive()) {
+        winner = 1;
+        return true;
+      }
+      if (playerTwoScore - playerOneScore >= 5 && ship2.isActive()) {
+        winner = 2;
+        return true;
+      }
+      return false;
+    }
+    else
+    {
+      if (!ship1.isActive()) {
+        winner = 0;
+        return true;
+      }
+      if (playerOneScore > 9){
+        winner = 1;
+        return true;
+      }
       return false;
     }
   }
@@ -209,6 +260,19 @@ abstract class AsteroidsGameLevel extends GameLevel
       }
     }
   }
+  
+  private void checkEnemyCollisions(Ship myShip, Ship otherShip) 
+  {
+    if (!myShip.isActive() || !myShip.isActive()) return;
+    
+    for (GameObject missile : missiles) {
+      if (missile.checkCollision(otherShip) && ((Missile)missile).ship == myShip)
+      {
+        
+      }
+    }
+    
+  }
 
   // Check missile to asteroid collisions
   private void checkMissileCollisions(Ship ship) 
@@ -219,6 +283,10 @@ abstract class AsteroidsGameLevel extends GameLevel
     for (GameObject missile : missiles) {
       for (GameObject asteroid : asteroids) {
         if (missile.checkCollision(asteroid) && ((Missile)missile).ship == ship) {
+          if(asteroid instanceof SmallAsteroid)
+            smallDestroyed++;
+          if(smallDestroyed % 3 == 0 && smallDestroyed != 0 && asteroid instanceof SmallAsteroid)
+            addAsteroids(1);
           missile.setInactive();
           asteroid.setInactive();
           int asteroidx = (int)asteroid.getX();
@@ -247,7 +315,10 @@ abstract class AsteroidsGameLevel extends GameLevel
 
     for (GameObject asteroid : asteroids) {
       if (asteroid.isActive() && !ship.isShielded() && ship.checkCollision(asteroid)) {
-
+        if(asteroid instanceof SmallAsteroid)
+            smallDestroyed++;
+        if(smallDestroyed % 3 == 0 && smallDestroyed != 0 && asteroid instanceof SmallAsteroid)
+            addAsteroids(1);
         int shipx = (int)ship.getX();
         int shipy = (int)ship.getY();
         explosions.add(new ExplosionLarge(game, shipx, shipy));
@@ -255,7 +326,7 @@ abstract class AsteroidsGameLevel extends GameLevel
         //Removes ships and sets conditions for life decrementation
         ship.setInactive();
         if (ship == ship1) {
-          playerOneRemainingLives = playerOneRemainingLives - 1;
+          playerOneRemainingLives--;
           P1lives.get(playerOneRemainingLives).setInactive();
           P1lives.remove(playerOneRemainingLives);
           if (playerOneRemainingLives > 0) {
@@ -270,8 +341,9 @@ abstract class AsteroidsGameLevel extends GameLevel
             }
           }
         } else if (ship == ship2) {
-          playerTwoRemainingLives = playerTwoRemainingLives - 1;
+          playerTwoRemainingLives--;
           P2lives.get(playerTwoRemainingLives).setInactive();
+          P2lives.remove(playerTwoRemainingLives);
           if (playerTwoRemainingLives > 0) {
             ship2 = new Ship(game, width/2, height/2, 2, "ship2.png");
           } else {
@@ -284,7 +356,18 @@ abstract class AsteroidsGameLevel extends GameLevel
         }
         
         if (playerOneRemainingLives == 0 && playerTwoRemainingLives == 0) {
-          gameState = GameState.Lost;
+          if (playerOneScore > playerTwoScore){
+            winner = 1;
+            gameState = GameState.Finished;
+          }
+          else if (playerOneScore < playerTwoScore){
+            winner = 2;
+            gameState = GameState.Finished;
+          }
+          else
+          {
+            gameState = GameState.Lost;
+          }
         }
 
         asteroid.setInactive();
