@@ -113,10 +113,6 @@ class StartLevel extends GameLevel
   {
     singlePlayerButton.activateIfPressed(mouseX, mouseY);
     twoPlayerButton.activateIfPressed(mouseX, mouseY);
-    // Alternative method of activating a button...
-    //if (startButton.isPressed(mouseX, mouseY)) {
-    //  startButton.onPress();
-    //}
   }
 }
 
