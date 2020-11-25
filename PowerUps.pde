@@ -10,7 +10,7 @@ abstract class PowerUp extends GameObject
   StopWatch durationSW;
 
   PowerUp(PApplet applet, String imgFileName, int xpos, int ypos, float speed) 
-  {    
+  {
     super(applet, imgFileName, 51);
 
     setXY(xpos, ypos);
@@ -21,7 +21,7 @@ abstract class PowerUp extends GameObject
     durationSW = new StopWatch();
 
     // Domain keeps the moving sprite withing specific screen area 
-    setDomain(0, 0, applet.width, applet.height, Sprite.REBOUND );
+    // setDomain(0, 0, applet.width, applet.height, Sprite.REBOUND );
 
     soundPlayer.playPop();
   }
@@ -43,6 +43,7 @@ abstract class PowerUp extends GameObject
       super.setInactive();
       soundPlayer.playPop();
     }
+    setXY((getX()+game.width)%(game.width), (getY()+game.height)%(game.height));
   }
 
   abstract void activate(Ship ship);
@@ -62,6 +63,57 @@ class ShieldPowerup extends PowerUp
   void activate(Ship ship)
   {
     ship.setShield(15);
+    soundPlayer.playPop();
+  }
+
+  void drawOnScreen() {
+  }
+}
+
+/*****************************************/
+
+class LifePowerup extends PowerUp 
+{
+
+  LifePowerup(PApplet game, int xpos, int ypos, float speed) 
+  {
+    super(game, "powerup.png", xpos, ypos, speed);
+  }
+
+  void activate(Ship ship)
+  {
+    if (ship == ship1)
+    {
+      if(playerOneRemainingLives < 3){
+          P1lives.add(new Image(game, "ship1.png", 50 * P1lives.size() + XLivesOffset, YLivesOffset));
+      soundPlayer.playPop();
+      }
+    }
+    if (ship == ship2)
+    {
+      if(playerTwoRemainingLives < 3){
+          P2lives.add(new Image(game, "ship2.png", game.width - (50 * P2lives.size() + XLivesOffset), YLivesOffset));
+      soundPlayer.playPop();
+      }
+    }
+  }
+
+  void drawOnScreen() {
+  }
+}
+
+/*****************************************/
+
+class FreezePowerup extends PowerUp 
+{
+  FreezePowerup(PApplet game, int xpos, int ypos, float speed) 
+  {
+    super(game, "powerup.png", xpos, ypos, speed);
+  }
+
+  void activate(Ship ship)
+  {
+    ship.freeze(8);
     soundPlayer.playPop();
   }
 
