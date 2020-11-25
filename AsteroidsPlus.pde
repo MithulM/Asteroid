@@ -16,22 +16,39 @@ KeyboardController kbController;
 SoundPlayer soundPlayer;
 StopWatch stopWatch = new StopWatch();
 
-int playerOneRemainingLives;
-int playerTwoRemainingLives;
-CopyOnWriteArrayList<Image> P1lives = new CopyOnWriteArrayList<Image>();
-CopyOnWriteArrayList<Image> P2lives = new CopyOnWriteArrayList<Image>();
-
 final int YLivesOffset = 50;
 final int XLivesOffset = 30;
 final int space = 50;
+
+boolean infinite;
+int infAmmoTime;
+StopWatch ammoSW;
+boolean freeze;
+int FreezeTime;
+StopWatch freezeSW;
 
 int playerOneScore;
 int playerTwoScore;
 
 int winner;
+int prevT, dt;
 
+int playerOneRemainingLives = 3;
+int playerTwoRemainingLives = 3;
+CopyOnWriteArrayList<Image> P1lives = new CopyOnWriteArrayList<Image>();
+CopyOnWriteArrayList<Image> P2lives = new CopyOnWriteArrayList<Image>();
+Ship ship1;
+Ship ship2;
 void setup() {
   size(1000, 700);
+  freezeSW = new StopWatch();
+  ammoSW = new StopWatch();
+  
+  FreezeTime = 0;
+  infAmmoTime = 0;
+  
+  freeze = false;
+  infinite = false;
   
   // BG Image must be same size as window. 
   background = loadImage("background.png");
@@ -123,4 +140,6 @@ void draw() {
   background(background);
   S4P.drawSprites();
   gameLevel.drawOnScreen();
+  dt = millis()-prevT;
+  prevT=millis();
 }
