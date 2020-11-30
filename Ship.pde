@@ -115,6 +115,11 @@ class Ship extends GameObject
   {
     return getY();
   }
+  
+  void setRotation(float o, float a)
+  {
+    setRot(atan2(o, a));
+  }
 
   void processKeys() 
   {
