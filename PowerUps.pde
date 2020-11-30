@@ -84,18 +84,22 @@ class LifePowerup extends PowerUp
   {
     if (ship == ship1)
     {
-      if(playerOneRemainingLives < 3){
+      if(playerOneRemainingLives < startLives){
+          playerOneRemainingLives++;
           P1lives.add(new Image(game, "ship1.png", 50 * P1lives.size() + XLivesOffset, YLivesOffset));
-      soundPlayer.playPop();
+      }
+      else {
+        println("Already at max health.");
       }
     }
     if (ship == ship2)
     {
       if(playerTwoRemainingLives < 3){
+          playerTwoRemainingLives++;
           P2lives.add(new Image(game, "ship2.png", game.width - (50 * P2lives.size() + XLivesOffset), YLivesOffset));
-      soundPlayer.playPop();
       }
     }
+    soundPlayer.playPop();
   }
 
   void drawOnScreen() {
