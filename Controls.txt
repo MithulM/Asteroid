@@ -1,0 +1,10 @@
+Player 1:
+	W - Forward
+	A - Turn Left
+	D - Trun Right
+	Space - Shoot
+Player 2:
+	Up Arrow - Forward
+	Left Arrow - Turn Left
+	Right Arrow - Trun Right
+	Enter - Shoot
