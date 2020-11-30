@@ -53,8 +53,7 @@ abstract class GameObject extends Sprite
     rect( xpos, ypos, w, h);
   }
 
-
   abstract void update();
 
-  abstract void drawOnScreen();
+  void drawOnScreen() {}
 }
