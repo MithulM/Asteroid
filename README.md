@@ -15,3 +15,12 @@ Refactored GameObject to inherit from Sprite.
 
 Version 5: 
 Added a sprite visualization of the lives.
+
+Version 6: 
+Enemy ship
+
+Version 7:
+Wrap around
+
+Version 8:
+Lives and Freeze power ups.
