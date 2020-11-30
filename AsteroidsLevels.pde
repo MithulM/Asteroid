@@ -33,7 +33,7 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
     time1 = millis();
     time2 = millis();
     
-    playerOneRemainingLives = 3;
+    playerOneRemainingLives = startLives;
     playerTwoRemainingLives = 0;
 
     for (GameObject lives : P1lives)
@@ -66,28 +66,22 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
     super.update();
     enemyShip1.setRotation((float)(ship1.x() - enemyShip1.x()), (float)(enemyShip1.y() - ship1.y()));
     enemyShip2.setRotation((float)(ship1.x() - enemyShip2.x()), (float)(enemyShip2.y() - ship1.y()));
-    float rand1 = ((random(0, 1)*1000))%5+5;
-    float rand2 = ((random(0, 1)*1000))%5+5;
-    if ((millis() - time1)/1000 > rand1) {
+    if ((millis() - time1)/1000 > 7) {
       launchMissile(missileSpeed, enemyShip1);
-      println((millis() - time1)/1000);
-      println("Rand1: " + rand1);
       time1 = millis();
     }
-    if ((millis() - time2)/1000 > rand2) {
+    if ((millis() - time2)/1000 > 11) {
       launchMissile(missileSpeed, enemyShip2);
-      println((millis() - time2)/1000);
-      println("rand2: " + rand2);
       time2 = millis();
     }
     if (powerupSW.getRunTime() > periodBetweenPU) {
       powerupSW.reset();
-      int rand = (int)random(0, 4);
+      int rand = (int)random(0, 3);
       switch(rand) {
-      case 1:
+      case 0:
         powerUps.add(new ShieldPowerup(game, (int)random(0, game.width), (int)random(0, game.height), 100));
         break;
-      case 2:
+      case 1:
         powerUps.add(new LifePowerup(game, (int)random(0, game.width), (int)random(0, game.height), 100));
         break;
       default:
@@ -169,8 +163,8 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
       ship1 = new Ship(game, width * 7/16, height/2, 1, "ship1.png");
       ship2 = new Ship(game, width * 9/16, height/2, 2, "ship2.png");
       super.addAsteroids(4);
-      playerOneRemainingLives = 3;
-      playerTwoRemainingLives = 3;
+      playerOneRemainingLives = startLives;
+      playerTwoRemainingLives = startLives;
       for (GameObject lives : P1lives)
       {
         lives.setInactive();
@@ -199,12 +193,12 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
 
       if (powerupSW.getRunTime() > periodBetweenPU) {
       powerupSW.reset();
-      int rand = (int)random(1, 4);
+      int rand = (int)random(0, 3);
       switch(rand) {
-      case 1:
+      case 0:
         powerUps.add(new ShieldPowerup(game, (int)random(0, game.width), (int)random(0, game.height), 100));
         break;
-      case 2:
+      case 1:
         powerUps.add(new LifePowerup(game, (int)random(0, game.width), (int)random(0, game.height), 100));
         break;
       default:
@@ -219,7 +213,7 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
 
       fill(255);
       textSize(20);
-      msg = "Player 1 " + ": " + "Player 2";
+      msg = "Player 1 : Player 2";
       text(msg, (width/2) - 87, 20);
       textSize(40);
       msg = playerOneScore + " : " + playerTwoScore;
