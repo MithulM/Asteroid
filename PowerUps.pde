@@ -94,9 +94,12 @@ class LifePowerup extends PowerUp
     }
     if (ship == ship2)
     {
-      if(playerTwoRemainingLives < 3){
+      if(playerTwoRemainingLives < startLives){
           playerTwoRemainingLives++;
           P2lives.add(new Image(game, "ship2.png", game.width - (50 * P2lives.size() + XLivesOffset), YLivesOffset));
+      }
+      else {
+        println("Already at max lives.");
       }
     }
     soundPlayer.playPop();
