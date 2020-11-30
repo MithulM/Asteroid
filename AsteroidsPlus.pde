@@ -37,6 +37,7 @@ int playerOneRemainingLives = 3;
 int playerTwoRemainingLives = 3;
 CopyOnWriteArrayList<Image> P1lives = new CopyOnWriteArrayList<Image>();
 CopyOnWriteArrayList<Image> P2lives = new CopyOnWriteArrayList<Image>();
+
 Ship ship1;
 Ship ship2;
 void setup() {
