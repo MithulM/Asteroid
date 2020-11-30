@@ -253,7 +253,7 @@ abstract class AsteroidsGameLevel extends GameLevel
   private void checkEnemyCollisions() {
     if (ship2 == null) {
       for (GameObject missile : missiles) {
-        if (ship1.checkCollision(missile) && (((Missile)missile).ship == enemyShip1 || ((Missile)missile).ship == enemyShip2)) {
+        if (ship1.checkCollision(missile) && (((Missile)missile).ship == enemyShip1 || ((Missile)missile).ship == enemyShip2) && !ship1.isShielded) {
           int shipx = (int)ship1.getX();
           int shipy = (int)ship1.getY();
           explosions.add(new ExplosionLarge(game, shipx, shipy));
