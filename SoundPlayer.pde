@@ -17,7 +17,6 @@ class SoundPlayer
     gameOverPlayer = new SoundFile(app, "ThatsAllFolks.wav"); 
     popPlayer = new SoundFile(app, "pop.wav");
     explosionLargeAsteroid = new SoundFile(app, "LargAsteroidExplosion.wav");
-    //explosionLargeAsteroid.amp(0.3);
     explosionSmallAsteroid = new SoundFile(app, "SmallAsteroidExplosion.wav");
     explosionShip = new SoundFile(app, "ExplosionShip.wav");
     ohYea = new SoundFile(app, "OhYea.wav");
@@ -26,41 +25,62 @@ class SoundPlayer
 
   void playExplosion() 
   {
+    stop();
     boomPlayer.play();
   }
 
   void playPop() 
   {
+    stop();
     popPlayer.play();
   }
 
   void playGameOver() 
   {
+    stop();
     gameOverPlayer.play();
   }
   
   void playExplosionLargeAsteroid() 
   {
+    stop();
     explosionLargeAsteroid.play();
   }
 
   void playExplosionSmallAsteroid() 
   {
+    stop();
     explosionSmallAsteroid.play();
   }
   
   void playExplosionShip() 
   {
+    stop();
     explosionShip.play();
   }
 
   void playOhYea() 
   {
+    stop();
     ohYea.play();
   }
 
   void playMissileLaunch() 
   {
+    stop();
     missileLaunch.play();
   }
+  
+  void stop()
+  {
+    boomPlayer.stop();
+    popPlayer.stop();
+    gameOverPlayer.stop();
+    explosionLargeAsteroid.stop();
+    explosionSmallAsteroid.stop();
+    explosionShip.stop();
+    ohYea.stop();
+    missileLaunch.stop();
+  }
+
 }
