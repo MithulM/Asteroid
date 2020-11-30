@@ -10,7 +10,9 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
   int periodBetweenPU = 10;
   float asteroidSpeed;
   PApplet applet;
-
+  int time1;
+  int time2;
+  
   AsteroidsLevel1(PApplet applet)
   {
     super(applet);
@@ -25,7 +27,12 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
 
     ship1 = new Ship(game, width/2, height/2, 1, "ship1.png");
     ship2 = null;
-
+    enemyShip1 = new Ship(game, 50, height/2, 1, "ship3.png");
+    enemyShip2 = new Ship(game, width/2, 50, 1, "ship3.png");
+    
+    time1 = millis();
+    time2 = millis();
+    
     playerOneRemainingLives = 3;
     playerTwoRemainingLives = 0;
 
@@ -56,10 +63,24 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
 
   void update() 
   {
-    super.update();    
- 
-
-   if (powerupSW.getRunTime() > periodBetweenPU) {
+    super.update();
+    enemyShip1.setRotation((float)(ship1.x() - enemyShip1.x()), (float)(enemyShip1.y() - ship1.y()));
+    enemyShip2.setRotation((float)(ship1.x() - enemyShip2.x()), (float)(enemyShip2.y() - ship1.y()));
+    float rand1 = ((random(0, 1)*1000))%5+5;
+    float rand2 = ((random(0, 1)*1000))%5+5;
+    if ((millis() - time1)/1000 > rand1) {
+      launchMissile(missileSpeed, enemyShip1);
+      println((millis() - time1)/1000);
+      println("Rand1: " + rand1);
+      time1 = millis();
+    }
+    if ((millis() - time2)/1000 > rand2) {
+      launchMissile(missileSpeed, enemyShip2);
+      println((millis() - time2)/1000);
+      println("rand2: " + rand2);
+      time2 = millis();
+    }
+    if (powerupSW.getRunTime() > periodBetweenPU) {
       powerupSW.reset();
       int rand = (int)random(0, 4);
       switch(rand) {
@@ -73,7 +94,7 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
         powerUps.add(new FreezePowerup(game, (int)random(0, game.width), (int)random(0, game.height), 100));
       }
     }
-    }
+  }
 
     void drawOnScreen() 
     {    
@@ -95,22 +116,30 @@ class AsteroidsLevel1 extends AsteroidsGameLevel
     {
       if ( key == ' ') {
         if (ship1.isActive()) {
-          launchMissile(missileSpeed);
+          launchMissile(missileSpeed, ship1);
         }
       }
     }
 
-    private void launchMissile(float speed) 
+    private void launchMissile(float speed, Ship ship) 
     {
       if (ship1.energy >= .2) {
-        int shipx = (int)ship1.getX();
-        int shipy = (int)ship1.getY();
-        Missile missile = new Missile(game, shipx, shipy, ship1, "playerMissleOne.png");
-        missile.setRot(ship1.getRot() - PI*.5);
+        
+        int shipx = (int)ship.getX();
+        int shipy = (int)ship.getY();
+
+        String missleImage;
+        if (ship == ship1) {
+          missleImage = "playerMissleOne.png";
+        } else {
+          missleImage = "playerMissleTwo.png";
+        }
+        Missile missile = new Missile(game, shipx, shipy, ship, missleImage);
+        missile.setRot(ship.getRot() - PI/2);
         missile.setSpeed(speed);
         missiles.add(missile);
 
-        ship1.energy -= ship1.deplete;
+        ship.energy -= ship.deplete;
       }
     }
 
