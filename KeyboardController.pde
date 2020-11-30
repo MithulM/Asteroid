@@ -77,5 +77,4 @@ class KeyboardController
   {
     return Enter.pressed();
   }
-  
 }
