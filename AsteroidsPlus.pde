@@ -33,8 +33,9 @@ int playerTwoScore;
 int winner;
 int prevT, dt;
 
-int playerOneRemainingLives = 3;
-int playerTwoRemainingLives = 3;
+final int startLives = 5;
+int playerOneRemainingLives = startLives;
+int playerTwoRemainingLives = startLives;
 CopyOnWriteArrayList<Image> P1lives = new CopyOnWriteArrayList<Image>();
 CopyOnWriteArrayList<Image> P2lives = new CopyOnWriteArrayList<Image>();
 
