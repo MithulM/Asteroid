@@ -11,6 +11,8 @@ abstract class AsteroidsGameLevel extends GameLevel
   CopyOnWriteArrayList<GameObject> powerUps;
   int smallDestroyed;
   boolean frozen;
+  Ship enemyShip1;
+  Ship enemyShip2;
   
   AsteroidsGameLevel(PApplet game)
   {
@@ -77,6 +79,10 @@ abstract class AsteroidsGameLevel extends GameLevel
     if (ship2 != null) {
       ship2.setInactive();
     }
+    else {
+      enemyShip1.setInactive();
+      enemyShip2.setInactive();
+    }
     for (GameObject missile : missiles) {
       missile.setInactive();
     }
@@ -114,6 +120,7 @@ abstract class AsteroidsGameLevel extends GameLevel
     checkShipCollisions(ship1);
     checkMissileCollisions(ship1);
     checkPowerUpCollisions(ship1);
+    checkEnemyCollisions();
     
     if (ship2 != null) {
       checkShipCollisions(ship2);
@@ -155,6 +162,7 @@ abstract class AsteroidsGameLevel extends GameLevel
       }
       return false;
     }
+    // Player 1 mode
     else
     {
       if (!ship1.isActive()) {
@@ -242,6 +250,30 @@ abstract class AsteroidsGameLevel extends GameLevel
   }
 
   // Check PowerUp to Missile collisions
+  private void checkEnemyCollisions() {
+    if (ship2 == null) {
+      for (GameObject missile : missiles) {
+        if (ship1.checkCollision(missile) && (((Missile)missile).ship == enemyShip1 || ((Missile)missile).ship == enemyShip2)) {
+          int shipx = (int)ship1.getX();
+          int shipy = (int)ship1.getY();
+          explosions.add(new ExplosionLarge(game, shipx, shipy));
+        
+          ship1.setInactive();
+          playerOneRemainingLives--;
+          P1lives.get(playerOneRemainingLives).setInactive();
+          P1lives.remove(playerOneRemainingLives);
+          if (playerOneRemainingLives > 0) {
+            ship1 = new Ship(game, width/2, height/2, 1 , "ship1.png");
+          } else {
+            ship1.drawOnScreen();
+            gameState = GameState.Lost;
+          }
+          missile.setInactive();
+        }
+      }
+    }
+  }
+  
   private void checkPowerUpCollisions(Ship ship) 
   {
     if (!ship.isActive()) return;
@@ -259,19 +291,6 @@ abstract class AsteroidsGameLevel extends GameLevel
         }
       }
     }
-  }
-  
-  private void checkEnemyCollisions(Ship myShip, Ship otherShip) 
-  {
-    if (!myShip.isActive() || !myShip.isActive()) return;
-    
-    for (GameObject missile : missiles) {
-      if (missile.checkCollision(otherShip) && ((Missile)missile).ship == myShip)
-      {
-        
-      }
-    }
-    
   }
 
   // Check missile to asteroid collisions
