@@ -11,7 +11,6 @@ class GameOver extends GameObject
   GameOver(PApplet game, int xpos, int ypos) 
   {
     super(game, "gameOver.png", 60);
-    
     setXY(xpos, ypos);
     setVelXY(0, 0);
     setScale(scale);
@@ -40,7 +39,6 @@ class OhYea extends GameObject
   OhYea(PApplet applet, int xpos, int ypos) 
   {
     super(applet, "OhYea.png", 60);
-
     setXY(xpos, ypos);
     setVelXY(0, 0);
     setScale(scale);
